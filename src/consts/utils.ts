@@ -3,4 +3,4 @@ export const fsEncoding = {
   encoding: "utf-8",
 };
 
-export const red = (value: string) => console.log(chalk.red(value));
+export const otherRed = (value: string) => chalk.red(value);

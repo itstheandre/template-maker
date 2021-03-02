@@ -1,3 +1,4 @@
+import { otherRed } from "./consts";
 import { validateError } from "./errors";
 import {
   createFileWithReplacer,
@@ -32,8 +33,11 @@ export async function copyTemplate(
   outDir?: string,
   vars: Record<string, string> = {},
   number = 2
-): Promise<string[]> {
-  await validateError(value, outDir, vars, number);
+): Promise<string[] | undefined> {
+  const errors = await validateError(value, outDir, vars, number);
+  if (errors) {
+    throw new Error(otherRed(errors));
+  }
   if (typeof value === "object") {
     return copyTemplateDirectory(value);
   }

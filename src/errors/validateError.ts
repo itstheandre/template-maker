@@ -1,44 +1,53 @@
 import { ICopyDir } from "../types";
-import { red } from "../consts";
+// import { red } from "../consts";
 import { fsExists } from "../helpers";
 import {
-  whenNoSuchThing,
+  // whenNoSuchThing,
   noSuchThing,
   noOutDir,
-  whenNoInitial,
+  // whenNoInitial,
   noInitialValue,
-  whenNoOutDir,
+  // whenNoOutDir,
   notEnoughCurlies,
-  whenNotEnoughCurlies,
+  // whenNotEnoughCurlies,
 } from "./badData.errors";
 
 export async function validateError(
   value: ICopyDir | string,
   outDir?: string,
-  vars: Record<string, string> = {},
-  number: number = 2
-): Promise<void> {
+  _vars?: Record<string, string>,
+  number?: number
+): Promise<false | string> {
   if (!value) {
-    red(noInitialValue);
-    whenNoInitial();
+    // red(noInitialValue);
+    // whenNoInitial();
+    return noInitialValue;
   }
   if (typeof value === "object") {
     if (!(await fsExists(value.inDir))) {
-      red(noSuchThing);
-      whenNoSuchThing();
+      return noSuchThing;
     }
     if (!value.outDir) {
-      red(noOutDir);
-      whenNoOutDir();
+      return noOutDir;
+    }
+
+    if ((value.number ?? 2) < 2) {
+      return notEnoughCurlies;
     }
   }
 
-  if (!outDir) {
-    red(noOutDir);
-    whenNoOutDir();
+  if (typeof value === "string") {
+    if (!(await fsExists(value))) {
+      return noSuchThing;
+    }
+
+    if (!outDir) {
+      return noOutDir;
+    }
+    if ((number ?? 2) < 2) {
+      return notEnoughCurlies;
+    }
   }
-  if (number < 2) {
-    red(notEnoughCurlies);
-    whenNotEnoughCurlies();
-  }
+
+  return false;
 }

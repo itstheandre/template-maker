@@ -13,22 +13,23 @@ export async function createFileWithReplacer({
 }: {
   file: string;
   outDir: string;
-  prevPath: string;
+  prevPath?: string;
   vars: Record<string, string>;
   number?: number;
 }) {
   const fileContents = await fs.readFile(prevPath, fsEncoding);
+  console.log("fileContents:", fileContents);
   const fileName = file.replace(new RegExp(`^${sep}*`, "gi"), "");
   const path = join(outDir, fileName);
   const realPath = contentReplacer(path, vars, number);
   const content = contentReplacer(fileContents, vars, number);
-  try {
-    await fs.writeFile(realPath, content, { encoding: "utf-8" });
-    return fileName;
-  } catch (error) {
-    console.log("error:", error);
-    throw new Error(error);
-  }
+  // try {
+  await fs.writeFile(realPath, content, fsEncoding);
+  return fileName;
+  // } catch (error) {
+  //   console.log("error:", error);
+  //   throw new Error(error);
+  // }
 }
 
 // export async function createFileWithReplacer(
